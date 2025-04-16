@@ -5,8 +5,8 @@ import os
 
 app = Flask(__name__)
 
-movies = pickle.load(open('C:\\Dump\\gcem\\py\\ym-mrs\\movie_list.pkl', 'rb'))
-similarity = pickle.load(open('C:\\Dump\\gcem\\py\\ym-mrs\\similarity.pkl', 'rb'))
+movies = pickle.load(open('movie_list.pkl', 'rb'))
+similarity = pickle.load(open('similarity.pkl', 'rb'))
 
 def recommend(movie):
     try:
