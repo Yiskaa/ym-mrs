@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommender System</title>
+    <style>
+        body {
+            background-image: url('{{ url_for('static', filename='background.jpg') }}');
+            background-size: cover; 
+            background-position: center;  
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #ffffff;
+            font-family: 'Consolas', 'Courier New', monospace; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            z-index: 1;
+        }
+
+        form {
+            z-index: 1;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input, select, button {
+            font-family: 'Consolas', 'Courier New', monospace;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        input {
+            background-color: #333;
+            color: #fff;
+        }
+
+        select {
+            background-color: #333;
+            color: #fff;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #6600cc;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #4b0082;
+        }
+
+        select:focus, input:focus, button:focus {
+            outline: none;
+            border-color: #ff6600;
+        }
+
+        #recommendations {
+            margin-top: 20px;
+            z-index: 1;
+            text-align: center;
+            display: none;
+        }
+
+        .movie-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .movie-item {
+            margin: 10px;
+            text-align: center;
+        }
+
+        /* New CSS for wrapping movie names */
+        .movie-item h3 {
+            word-wrap: break-word;
+            word-break: break-word;
+            max-width: 200px;       /* Limit the width of the movie title */
+            overflow: hidden;       /* Hide overflow */
+            text-overflow: ellipsis; /* Add ellipsis if the title is too long */
+            white-space: normal;    /* Allow wrapping */
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            input, select, button {
+                width: 90%;
+                max-width: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Movie Recommender System</h1>
+    <form id="movie-form">
+        <label for="movie">Browse Over 15000 Movies!!</label>
+        <input list="movies" name="movie" id="movie" required placeholder="Search Your Movie" />
+        <datalist id="movies">
+            {% for title in movie_list %}
+                <option value="{{ title }}">{{ title }}</option>
+            {% endfor %}
+        </datalist>
+        <button type="submit">Recommend</button>
+    </form>
+
+    <div id="recommendations">
+        <h2>Recommended Movies:</h2>
+        <div class="movie-row" id="movie-list"></div>
+    </div>
+
+    <script>
+        document.getElementById('movie-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+            const selectedMovie = document.getElementById('movie').value;
+    
+            fetch('/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ movie: selectedMovie })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const movieList = document.getElementById('movie-list');
+                movieList.innerHTML = '';
+    
+                if (data.recommended_names.length > 0) {
+                    data.recommended_names.forEach((name, index) => {
+                        const movieItem = document.createElement('div');
+                        movieItem.className = 'movie-item';
+                        
+                        const posterImage = data.recommended_posters[index] || '/static/poster_not_found.jpg';
+    
+                        const img = document.createElement('img');
+                        img.src = posterImage;
+                        img.alt = name;
+                        img.width = 150;
+    
+                        img.onerror = function() {
+                            this.src = '/static/poster_not_found.jpg';
+                        };
+    
+                        movieItem.innerHTML = `<h3>${name}</h3>`;
+                        movieItem.appendChild(img);
+                        movieList.appendChild(movieItem);
+                    });
+                    document.getElementById('recommendations').style.display = 'block';
+                } else {
+                    movieList.innerHTML = '<p>No recommendations available.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

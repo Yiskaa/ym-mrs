@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results for "{{ query }}"</h1>
+    {% if results.empty %}
+        <p>No movies found.</p>
+    {% else %}
+        <ul>
+            {% for _, movie in results.iterrows() %}
+                <li>{{ movie.title }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <a href="/">Back to Home</a>
+</body>
+</html>

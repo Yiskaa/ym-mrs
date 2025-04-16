@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended Movies</title>
+</head>
+<body>
+    <h1>Recommended Movies for "{{ movie }}"</h1>
+    <div>
+        {% for i in range(recommended_names|length) %}
+            <div style="margin-bottom: 20px;">
+                <h3>{{ recommended_names[i] }}</h3>
+                <img src="{{ recommended_posters[i] }}" alt="{{ recommended_names[i] }}" width="200">
+            </div>
+        {% endfor %}
+    </div>
+    <a href="/">Back to Home</a>
+</body>
+</html>
