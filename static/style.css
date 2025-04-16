@@ -76,13 +76,13 @@ button:hover {
 }
 
 .movie-item h3 {
-    max-width: 150px; /* Limiting the width of the title */
-    word-wrap: break-word; /* Break long words to fit the container */
-    white-space: normal; /* Allow text to wrap normally */
-    overflow-wrap: break-word; /* Break the word when it overflows */
+    max-width: 150px;
+    word-wrap: break-word; 
+    white-space: normal; 
+    overflow-wrap: break-word; 
     margin: 0;
-    line-height: 1.2; /* Optional: For better readability */
-    word-break: break-word; /* Ensure the word breaks when needed */
+    line-height: 1.2; 
+    word-break: break-word;
 }
 
 /* Responsive Design */
